@@ -114,13 +114,113 @@ Normalize our dataset.
 
 8. Finally, call the functions confusion_matrix(), and the classification_report() in order to evaluate the performance of our classifier.
 
-<H3>Program:</H3> 
+## PROGRAM: 
+~~~
+import pandas as pd
+import matplotlib.pyplot as plt
 
-Insert your code here
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
 
-<H3>Output:</H3>
+# Load Dataset
+data = pd.read_csv("Iris_data.csv")
 
-Show your results here
+# Dataset Output
+print("Dataset Output:")
+print(data.head())
+
+# Features and Target
+X = data.drop("species", axis=1)
+y = data["species"]
+
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42,
+    stratify=y
+)
+
+# Handle Missing Values
+imputer = SimpleImputer(strategy="mean")
+
+X_train = imputer.fit_transform(X_train)
+X_test = imputer.transform(X_test)
+
+# Feature Scaling
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Create MLP Classifier
+mlp = MLPClassifier(
+    hidden_layer_sizes=(20, 10),
+    activation="relu",
+    solver="adam",
+    max_iter=500,
+    random_state=42
+)
+
+# Train Model
+mlp.fit(X_train, y_train)
+
+# Predictions
+y_pred = mlp.predict(X_test)
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+print(cm)
+
+# Classification Report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Additional Metrics
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Precision:", precision_score(y_test, y_pred, average="weighted"))
+print("Recall:", recall_score(y_test, y_pred, average="weighted"))
+print("F1 Score:", f1_score(y_test, y_pred, average="weighted"))
+
+# Final Loss
+print("Final Loss:", mlp.loss_)
+
+# MLP Training Loss Curve
+plt.figure(figsize=(8, 5))
+
+plt.plot(mlp.loss_curve_)
+
+plt.xlabel("Iterations")
+plt.ylabel("Loss")
+plt.title("MLP Training Loss")
+
+plt.show()
+~~~
+## OUTPUT
+## DATASET OUTPUT:
+<img width="832" height="217" alt="dataset output" src="https://github.com/user-attachments/assets/4e10b2d0-c1ed-4d90-a32e-174f769915bb" />
+
+## CONFUSION MATRIX:
+<img width="798" height="143" alt="confusion matrix" src="https://github.com/user-attachments/assets/1927b6c1-9706-4ac2-ab7d-888f15dcd668" />
+
+## CLASSIFICATION REPORT:
+<img width="837" height="471" alt="classification report" src="https://github.com/user-attachments/assets/17bd47c5-f8b0-4847-9bfc-8e2516258efd" />
+
+## LOSS CURVE:
+<img width="826" height="552" alt="Loss curve" src="https://github.com/user-attachments/assets/b8988598-3240-46b6-8375-36e39e5376f4" />
 
 <H3>Result:</H3>
 Thus, MLP is implemented for multi-classification using python.
